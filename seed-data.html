@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenbank mit Beispieldaten füllen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0e27;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        .success {
+            background: rgba(67, 233, 123, 0.2);
+            border: 2px solid #43e97b;
+            display: block;
+        }
+        .info {
+            background: rgba(79, 172, 254, 0.2);
+            border: 2px solid #4facfe;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Datenbank mit Beispieldaten füllen</h1>
+        <p>Klicken Sie auf den Button, um die Datenbank mit Beispieltexten zu füllen.</p>
+        <p class="info">Es werden Texte von Max, Linda und Simon in den Kategorien Blog-Artikel und Fiktion/Fantasy erstellt.</p>
+
+        <button onclick="seedDatabase()">Beispieldaten laden</button>
+        <button onclick="clearDatabase()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            Datenbank leeren
+        </button>
+
+        <div id="status" class="status"></div>
+
+        <div style="margin-top: 30px;">
+            <a href="index.html" style="color: #4facfe; text-decoration: none;">← Zurück zur Startseite</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function seedDatabase() {
+            const sampleIdeas = [
+                {
+                    id: Date.now() + 1,
+                    author: "Max",
+                    title: "Die Zukunft der Künstlichen Intelligenz",
+                    text: "Künstliche Intelligenz verändert unsere Welt in rasantem Tempo. Von selbstfahrenden Autos bis hin zu intelligenten Assistenten – KI ist überall. Doch mit dieser Technologie kommen auch ethische Fragen: Wie schützen wir die Privatsphäre unserer Daten? Welche Auswirkungen hat KI auf den Arbeitsmarkt? Und wie stellen wir sicher, dass diese Technologie zum Wohl der Menschheit eingesetzt wird? In diesem Artikel möchte ich einige dieser Fragen beleuchten und einen Ausblick auf die Zukunft geben. Die Entwicklung von KI-Systemen erfordert nicht nur technisches Know-how, sondern auch ein tiefes Verständnis für Datenschutz und ethische Überlegungen. Wir müssen sicherstellen, dass Innovation und Sicherheit Hand in Hand gehen.",
+                    category: "blog",
+                    genre: "technology",
+                    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                    autoFeedback: [],
+                    userFeedback: [],
+                    overallRatings: []
+                },
+                {
+                    id: Date.now() + 2,
+                    author: "Linda",
+                    title: "Der letzte Drache von Eldoria",
+                    text: "Der Wind peitschte durch die kargen Berge von Eldoria, als Aria den letzten lebenden Drachen entdeckte. Seine Schuppen schimmerten in allen Farben des Regenbogens, ein Relikt aus einer längst vergangenen Zeit. 'Du bist also gekommen', sprach der Drache mit einer Stimme, die wie donnerndes Grollen klang. Aria nickte stumm. Sie hatte ihr ganzes Leben nach diesem Moment gesucht. Die Legenden hatten von einem Wesen erzählt, das die Macht besaß, die Welt zu retten – oder sie zu zerstören. Jetzt stand sie vor ihm, eine junge Kriegerin mit einem Schwert, das ihr Großvater geschmiedet hatte. 'Ich brauche deine Hilfe', sagte sie schließlich. 'Das Königreich steht am Abgrund.'",
+                    category: "short-story",
+                    genre: "fiction",
+                    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                    autoFeedback: [],
+                    userFeedback: [],
+                    overallRatings: []
+                },
+                {
+                    id: Date.now() + 3,
+                    author: "Simon",
+                    title: "Nachhaltigkeit im Alltag: 10 einfache Tipps",
+                    text: "Nachhaltigkeit beginnt zu Hause. Jeder von uns kann einen Beitrag zum Umweltschutz leisten. Hier sind meine Top 10 Tipps: 1. Reduziere Plastik im Alltag. 2. Kaufe regional und saisonal ein. 3. Nutze öffentliche Verkehrsmittel oder das Fahrrad. 4. Spare Energie durch bewusstes Heizen und Lüften. 5. Repariere Dinge, statt sie wegzuwerfen. Diese kleinen Änderungen im Alltag können große Auswirkungen auf unsere Umwelt haben. Es geht nicht darum, perfekt zu sein, sondern darum, bewusste Entscheidungen zu treffen.",
+                    category: "blog",
+                    genre: "environment",
+                    timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                    autoFeedback: [],
+                    userFeedback: [],
+                    overallRatings: []
+                },
+                {
+                    id: Date.now() + 4,
+                    author: "Max",
+                    title: "Die Magie der Morgenstunden",
+                    text: "Jeden Morgen um fünf Uhr stand der alte Zauberer Meridian auf. In der Stille vor der Dämmerung, wenn die Welt noch schlief, war die Magie am stärksten. Er öffnete das Fenster seines Turms und atmete die kühle Luft ein. Draußen begann der Himmel sich langsam zu färben – erst violett, dann rosa, schließlich golden. Dies war seine Zeit, die Zeit der Vorbereitung. Mit geschlossenen Augen murmelte er die alten Worte, die ihm sein Meister vor so vielen Jahren gelehrt hatte. Die Luft begann zu knistern, zu flimmern. Kleine Lichtpunkte tanzten um seine ausgestreckten Hände. 'Noch ein Tag', flüsterte er. 'Noch ein Tag, um die Balance zu wahren.' Denn Meridian war nicht nur ein Zauberer – er war der Hüter zwischen den Welten, der Wächter, der dafür sorgte, dass die magische und die menschliche Welt in Harmonie existieren konnten.",
+                    category: "short-story",
+                    genre: "fiction",
+                    timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    autoFeedback: [],
+                    userFeedback: [],
+                    overallRatings: []
+                },
+                {
+                    id: Date.now() + 5,
+                    author: "Linda",
+                    title: "Remote Work: Fluch oder Segen?",
+                    text: "Die Arbeitswelt hat sich verändert. Remote Work ist für viele zur Normalität geworden. Doch ist das wirklich so positiv, wie es scheint? Einerseits bietet Heimarbeit Flexibilität und spart Pendelzeit. Andererseits verschwimmen die Grenzen zwischen Arbeit und Privatleben. Als jemand, der seit drei Jahren im Home Office arbeitet, habe ich beides erlebt. Die Freiheit, meinen Tag selbst zu gestalten, ist unbezahlbar. Gleichzeitig vermisse ich manchmal den direkten Austausch mit Kollegen. Die Gesellschaft muss lernen, mit dieser neuen Realität umzugehen. Wir brauchen neue Strukturen, die sowohl Produktivität als auch Gesundheit fördern. Unternehmen müssen in Technologie investieren, aber auch in die mentale Gesundheit ihrer Mitarbeiter. Die Wirtschaft der Zukunft ist hybrid – eine Mischung aus Büro und Home Office.",
+                    category: "blog",
+                    genre: "business",
+                    timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+                    autoFeedback: [],
+                    userFeedback: [],
+                    overallRatings: []
+                },
+                {
+                    id: Date.now() + 6,
+                    author: "Simon",
+                    title: "Die vergessene Bibliothek",
+                    text: "Tief unter der Stadt, dort wo niemand mehr hinsah, lag die vergessene Bibliothek. Sarah hatte von ihr nur durch Zufall erfahren – ein alter Stadtplan in einem Antiquariat hatte den Eingang markiert. Jetzt stand sie vor einer schweren Holztür, bedeckt mit Staub und Spinnweben. Ihr Herz klopfte. Was würde sie dahinter finden? Mit einem Knarzen öffnete sich die Tür. Der Geruch von altem Papier und Tinte schlug ihr entgegen. Regale, so weit das Auge reichte. Tausende von Büchern, manche so alt, dass ihre Einbände brüchig waren. Sie griff nach einem Band und schlug ihn auf. Die Buchstaben begannen zu leuchten. Eine Geschichte über eine Welt jenseits unserer eigenen. Eine Welt voller Magie und Abenteuer. Und mit jedem Wort, das sie las, wurde diese Welt realer.",
+                    category: "short-story",
+                    genre: "fiction",
+                    timestamp: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+                    autoFeedback: [],
+                    userFeedback: [],
+                    overallRatings: []
+                },
+                {
+                    id: Date.now() + 7,
+                    author: "Max",
+                    title: "Blockchain: Revolution oder Hype?",
+                    text: "Blockchain-Technologie verspricht eine dezentralisierte Zukunft. Doch was steckt wirklich dahinter? Im Kern ist Blockchain ein verteiltes Datenbankkonzept, das Transparenz und Sicherheit verspricht. Von Kryptowährungen bis zu Smart Contracts – die Anwendungsmöglichkeiten scheinen endlos. Aber wie bei jeder Innovation gibt es auch Herausforderungen. Die Technologie benötigt enorme Rechenleistung, was Fragen zur Nachhaltigkeit aufwirft. Zudem sind die rechtlichen Rahmenbedingungen noch unklar. Als Technologie-Enthusiast bin ich fasziniert von den Möglichkeiten, bleibe aber realistisch. Nicht jedes Problem lässt sich mit Blockchain lösen.",
+                    category: "blog",
+                    genre: "technology",
+                    timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    autoFeedback: [],
+                    userFeedback: [],
+                    overallRatings: []
+                },
+                {
+                    id: Date.now() + 8,
+                    author: "Linda",
+                    title: "Minimalismus: Weniger ist mehr",
+                    text: "Vor zwei Jahren habe ich beschlossen, mein Leben zu entrümpeln. Was als einfacher Frühjahrsputz begann, wurde zu einer Lebensphilosophie. Minimalismus bedeutet für mich nicht, in einer leeren Wohnung zu leben, sondern bewusst zu wählen, was mir wirklich wichtig ist. Jeder Gegenstand in meinem Zuhause hat eine Bedeutung oder eine Funktion. Diese bewusste Auswahl gibt mir Freiheit. Ich verbringe weniger Zeit mit Aufräumen und mehr Zeit mit den Dingen, die mir Freude bereiten. Die Gesellschaft lehrt uns, dass mehr immer besser ist. Aber Glück kommt nicht aus Besitz, sondern aus Erfahrungen und Beziehungen.",
+                    category: "blog",
+                    genre: "lifestyle",
+                    timestamp: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+                    autoFeedback: [],
+                    userFeedback: [],
+                    overallRatings: []
+                }
+            ];
+
+            // Generate auto-feedback for each idea
+            sampleIdeas.forEach(idea => {
+                idea.autoFeedback = generateAutoFeedback(idea.text);
+            });
+
+            // Save to localStorage
+            localStorage.setItem('ideas', JSON.stringify(sampleIdeas));
+
+            // Show success message
+            const status = document.getElementById('status');
+            status.className = 'status success';
+            status.innerHTML = `
+                <h3>✓ Erfolgreich!</h3>
+                <p>${sampleIdeas.length} Beispieltexte wurden zur Datenbank hinzugefügt.</p>
+                <p>Autoren: Max (3 Texte), Linda (3 Texte), Simon (2 Texte)</p>
+                <p>Kategorien: Blog-Artikel (4), Kurzgeschichten (4)</p>
+                <br>
+                <a href="feedback.html" style="color: #43e97b; font-weight: bold; text-decoration: none;">
+                    → Zur Feedback-Seite
+                </a>
+            `;
+        }
+
+        function clearDatabase() {
+            if (confirm('Möchten Sie wirklich ALLE Texte aus der Datenbank löschen?')) {
+                localStorage.removeItem('ideas');
+                localStorage.removeItem('reviewedIdeas');
+                localStorage.removeItem('currentUserName');
+
+                // Clear all follow data
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('follow_')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+
+                const status = document.getElementById('status');
+                status.className = 'status success';
+                status.innerHTML = `
+                    <h3>✓ Datenbank geleert!</h3>
+                    <p>Alle Texte und Benutzerdaten wurden gelöscht.</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

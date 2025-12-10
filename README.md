@@ -1,4 +1,4 @@
-# Text Feedback Tool
+# Story-Pilot
 
 Eine moderne, futuristische Webapplikation zum Teilen von Textideen und Erhalten von Feedback.
 

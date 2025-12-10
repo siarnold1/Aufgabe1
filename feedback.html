@@ -80,6 +80,114 @@
         </div>
     </div>
 
+    <!-- Initial Choice Modal -->
+    <div id="choiceModal" class="modal" style="display: block;">
+        <div class="modal-content">
+            <h2>Willkommen auf der Feedback-Seite!</h2>
+            <p class="modal-hint">Was möchten Sie tun?</p>
+
+            <div class="choice-buttons">
+                <button class="btn btn-choice" onclick="showMyOwnFeedback()">
+                    <span class="choice-icon">📝</span>
+                    <h3>Mein eigenes Feedback</h3>
+                    <p>Sehen Sie Feedback zu Ihren eigenen Texten</p>
+                </button>
+
+                <button class="btn btn-choice" onclick="showReviewChoice()">
+                    <span class="choice-icon">🎯</span>
+                    <h3>Anderen Feedback geben</h3>
+                    <p>Reviewen Sie einen zufälligen Text</p>
+                </button>
+
+                <button class="btn btn-choice" onclick="showAllIdeas()">
+                    <span class="choice-icon">🌐</span>
+                    <h3>Alle Texte durchsuchen</h3>
+                    <p>Sehen Sie alle Texte und Feedback</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Preference Modal -->
+    <div id="reviewPreferenceModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close" onclick="backToChoice()">&times;</span>
+            <h2>Welchen Text möchten Sie reviewen?</h2>
+            <p class="modal-hint">Wählen Sie Ihre bevorzugte Textart und Genre</p>
+
+            <form id="reviewPreferenceForm">
+                <div class="form-group">
+                    <label for="preferredCategory">Bevorzugte Textart *</label>
+                    <select id="preferredCategory" required>
+                        <option value="">-- Bitte wählen Sie --</option>
+                        <option value="any">🎲 Egal (Zufällig)</option>
+                        <option value="social-media">📱 Social Media Beitrag</option>
+                        <option value="blog">📝 Blog-Artikel</option>
+                        <option value="newspaper">📰 Zeitungskommentar</option>
+                        <option value="essay">📖 Essay / Aufsatz</option>
+                        <option value="short-story">📚 Kurzgeschichte</option>
+                        <option value="poem">✍️ Gedicht</option>
+                        <option value="product">🛍️ Produktbeschreibung</option>
+                        <option value="speech">🎤 Rede / Vortrag</option>
+                        <option value="review">⭐ Rezension / Kritik</option>
+                        <option value="academic">🎓 Wissenschaftlicher Text</option>
+                        <option value="letter">✉️ Brief / E-Mail</option>
+                        <option value="other">📄 Sonstiges</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="preferredGenre">Bevorzugtes Genre (optional)</label>
+                    <select id="preferredGenre">
+                        <option value="">Alle Genres</option>
+                        <option value="fiction">🌟 Fiktion / Fantasy</option>
+                        <option value="non-fiction">📚 Sachtext / Non-Fiction</option>
+                        <option value="technology">💻 Technologie / IT</option>
+                        <option value="science">🔬 Wissenschaft</option>
+                        <option value="business">💼 Wirtschaft / Business</option>
+                        <option value="politics">🏛️ Politik / Gesellschaft</option>
+                        <option value="culture">🎨 Kultur / Kunst</option>
+                        <option value="lifestyle">🌈 Lifestyle / Persönliches</option>
+                        <option value="education">📖 Bildung / Lernen</option>
+                        <option value="health">⚕️ Gesundheit / Medizin</option>
+                        <option value="environment">🌱 Umwelt / Nachhaltigkeit</option>
+                        <option value="entertainment">🎬 Unterhaltung / Medien</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon">🎲</span>
+                        Text zum Reviewen finden
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="backToChoice()">
+                        Zurück
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Single Review Modal -->
+    <div id="singleReviewModal" class="modal" style="display: none;">
+        <div class="modal-content modal-content-large">
+            <span class="modal-close" onclick="closeReviewModal()">&times;</span>
+            <h2>Text zum Reviewen</h2>
+            <div id="singleReviewContent">
+                <!-- Wird dynamisch gefüllt -->
+            </div>
+            <div class="review-actions">
+                <button class="btn btn-primary" onclick="showNextReview()">
+                    <span class="btn-icon">➡️</span>
+                    Nächsten Text reviewen
+                </button>
+                <button class="btn btn-secondary" onclick="backToChoice()">
+                    Zurück zur Auswahl
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal for adding user feedback -->
     <div id="feedbackModal" class="modal">
         <div class="modal-content modal-content-large">

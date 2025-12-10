@@ -952,6 +952,108 @@ body {
     border-top: 1px solid var(--border-color);
 }
 
+/* Choice Buttons */
+.choice-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.btn-choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.btn-choice:hover {
+    transform: translateY(-5px);
+    border-color: #667eea;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.choice-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.btn-choice h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--text-light);
+}
+
+.btn-choice p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin: 0;
+}
+
+/* Follow Button */
+.btn-follow {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: rgba(102, 126, 234, 0.2);
+    border: 2px solid #667eea;
+    color: #667eea;
+    transition: all 0.3s ease;
+}
+
+.btn-follow:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.05);
+}
+
+.btn-follow.following {
+    background: #43e97b;
+    border-color: #43e97b;
+    color: white;
+}
+
+.btn-follow.following:hover {
+    background: #38d66a;
+    border-color: #38d66a;
+}
+
+/* Single Review Card */
+.single-review-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.review-feedback-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.review-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 20px;
+    background: var(--bg-card);
+    border-radius: 15px;
+    flex-wrap: wrap;
+}
+
 /* Animations */
 @keyframes fadeIn {
     from {

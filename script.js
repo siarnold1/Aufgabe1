@@ -772,6 +772,233 @@ if (document.getElementById('overallRatingModal')) {
     });
 }
 
+// Choice Modal Functions
+let currentUserName = localStorage.getItem('currentUserName') || null;
+let currentReviewCategory = null;
+let currentReviewGenre = null;
+let reviewedIdeasIds = JSON.parse(localStorage.getItem('reviewedIdeas') || '[]');
+
+function showMyOwnFeedback() {
+    // Get or set user name
+    if (!currentUserName) {
+        currentUserName = prompt('Bitte geben Sie Ihren Namen ein, um Ihre eigenen Texte zu sehen:');
+        if (!currentUserName) {
+            alert('Sie müssen einen Namen eingeben.');
+            return;
+        }
+        localStorage.setItem('currentUserName', currentUserName);
+    }
+
+    document.getElementById('choiceModal').style.display = 'none';
+
+    // Filter ideas by current user
+    const allIdeas = getIdeas();
+    const myIdeas = allIdeas.filter(idea =>
+        idea.author.toLowerCase() === currentUserName.toLowerCase()
+    );
+
+    if (myIdeas.length === 0) {
+        alert(`Keine Texte von "${currentUserName}" gefunden. Reichen Sie zuerst einen Text ein!`);
+        document.getElementById('choiceModal').style.display = 'block';
+        return;
+    }
+
+    displayFilteredIdeas(myIdeas);
+    updateFilterStats(myIdeas.length, allIdeas.length);
+
+    // Hide filter section
+    document.querySelector('.filter-section').style.display = 'none';
+}
+
+function showReviewChoice() {
+    document.getElementById('choiceModal').style.display = 'none';
+    document.getElementById('reviewPreferenceModal').style.display = 'block';
+}
+
+function showAllIdeas() {
+    document.getElementById('choiceModal').style.display = 'none';
+    loadIdeas();
+    document.querySelector('.filter-section').style.display = 'block';
+}
+
+function backToChoice() {
+    document.getElementById('reviewPreferenceModal').style.display = 'none';
+    document.getElementById('singleReviewModal').style.display = 'none';
+    document.getElementById('choiceModal').style.display = 'block';
+}
+
+function closeReviewModal() {
+    document.getElementById('singleReviewModal').style.display = 'none';
+}
+
+// Handle review preference form
+if (document.getElementById('reviewPreferenceForm')) {
+    document.getElementById('reviewPreferenceForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        currentReviewCategory = document.getElementById('preferredCategory').value;
+        currentReviewGenre = document.getElementById('preferredGenre').value;
+
+        if (!currentReviewCategory) {
+            alert('Bitte wählen Sie eine Textart.');
+            return;
+        }
+
+        findAndShowRandomIdea();
+    });
+}
+
+function findAndShowRandomIdea() {
+    const allIdeas = getIdeas();
+
+    // Filter ideas based on preferences
+    let filteredIdeas = allIdeas.filter(idea => {
+        // Don't show already reviewed ideas
+        if (reviewedIdeasIds.includes(idea.id)) {
+            return false;
+        }
+
+        // Don't show own ideas
+        if (currentUserName && idea.author.toLowerCase() === currentUserName.toLowerCase()) {
+            return false;
+        }
+
+        // Filter by category
+        if (currentReviewCategory && currentReviewCategory !== 'any') {
+            if (idea.category !== currentReviewCategory) {
+                return false;
+            }
+        }
+
+        // Filter by genre
+        if (currentReviewGenre && currentReviewGenre !== '') {
+            if (idea.genre !== currentReviewGenre) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+
+    if (filteredIdeas.length === 0) {
+        alert('Keine passenden Texte zum Reviewen gefunden. Versuchen Sie andere Filter oder setzen Sie die Filter zurück.');
+        return;
+    }
+
+    // Select random idea
+    const randomIndex = Math.floor(Math.random() * filteredIdeas.length);
+    const selectedIdea = filteredIdeas[randomIndex];
+
+    showSingleIdeaForReview(selectedIdea);
+}
+
+function showSingleIdeaForReview(idea) {
+    document.getElementById('reviewPreferenceModal').style.display = 'none';
+    document.getElementById('singleReviewModal').style.display = 'block';
+
+    const content = document.getElementById('singleReviewContent');
+
+    const date = new Date(idea.timestamp);
+    const formattedDate = date.toLocaleDateString('de-DE', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    const categoryLabel = getCategoryLabel(idea.category);
+    const genreLabel = idea.genre ? getGenreLabel(idea.genre) : '';
+
+    // Check if already following
+    const followKey = `follow_${idea.author}`;
+    const isFollowing = localStorage.getItem(followKey) === 'true';
+
+    content.innerHTML = `
+        <div class="single-review-card">
+            <div class="idea-header">
+                <div>
+                    <h2 class="idea-title">${escapeHtml(idea.title)}</h2>
+                    <div class="idea-meta">
+                        von <strong>${escapeHtml(idea.author)}</strong> • ${formattedDate}
+                    </div>
+                    <div class="idea-categories">
+                        <span class="category-badge">${categoryLabel}</span>
+                        ${genreLabel ? `<span class="genre-badge">${genreLabel}</span>` : ''}
+                    </div>
+                </div>
+                <button class="btn btn-follow ${isFollowing ? 'following' : ''}"
+                        onclick="toggleFollow('${escapeHtml(idea.author)}')"
+                        id="followBtn-${idea.id}">
+                    <span class="btn-icon">${isFollowing ? '✓' : '+'}</span>
+                    ${isFollowing ? 'Folge ich' : 'Folgen'}
+                </button>
+            </div>
+
+            <div class="idea-content">${escapeHtml(idea.text)}</div>
+
+            <div class="feedback-section">
+                <h3 class="feedback-header">🤖 Automatisches Feedback</h3>
+                ${idea.autoFeedback.length > 0
+                    ? idea.autoFeedback.map(fb => `
+                        <div class="feedback-item auto">
+                            <div class="feedback-meta">
+                                <span class="feedback-author">System-Analyse</span>
+                                <span>${fb.trigger}</span>
+                            </div>
+                            <div class="feedback-text">${fb.text}</div>
+                        </div>
+                    `).join('')
+                    : '<p style="color: var(--text-dim);">Keine automatischen Hinweise gefunden.</p>'
+                }
+            </div>
+
+            <div class="review-feedback-actions">
+                <button class="btn btn-primary" onclick="openFeedbackModal(${idea.id})">
+                    <span class="btn-icon">💭</span>
+                    Feedback zu Passage geben
+                </button>
+                <button class="btn btn-secondary" onclick="openOverallRatingModal(${idea.id})">
+                    <span class="btn-icon">⭐</span>
+                    Gesamtbewertung abgeben
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Mark as reviewed
+    if (!reviewedIdeasIds.includes(idea.id)) {
+        reviewedIdeasIds.push(idea.id);
+        localStorage.setItem('reviewedIdeas', JSON.stringify(reviewedIdeasIds));
+    }
+}
+
+function showNextReview() {
+    findAndShowRandomIdea();
+}
+
+function toggleFollow(authorName) {
+    const followKey = `follow_${authorName}`;
+    const isFollowing = localStorage.getItem(followKey) === 'true';
+
+    if (isFollowing) {
+        localStorage.removeItem(followKey);
+        alert(`Sie folgen ${authorName} nicht mehr.`);
+    } else {
+        localStorage.setItem(followKey, 'true');
+        alert(`Sie folgen jetzt ${authorName}!`);
+    }
+
+    // Update button
+    const followBtns = document.querySelectorAll(`[onclick*="toggleFollow('${authorName}')"]`);
+    followBtns.forEach(btn => {
+        const newIsFollowing = !isFollowing;
+        btn.className = `btn btn-follow ${newIsFollowing ? 'following' : ''}`;
+        btn.innerHTML = `
+            <span class="btn-icon">${newIsFollowing ? '✓' : '+'}</span>
+            ${newIsFollowing ? 'Folge ich' : 'Folgen'}
+        `;
+    });
+}
+
 // Utility function to escape HTML
 function escapeHtml(unsafe) {
     return unsafe

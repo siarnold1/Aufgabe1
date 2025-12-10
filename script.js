@@ -1021,8 +1021,7 @@ if (document.getElementById('choiceModal')) {
     const mode = urlParams.get('mode');
 
     if (mode === 'own') {
-        // Directly go to "My own feedback"
-        document.getElementById('choiceModal').style.display = 'none';
+        // Directly go to "My own feedback" without showing modal
         showMyOwnFeedback();
     } else if (mode === 'review') {
         // Show choice modal but hide "My own feedback" button
@@ -1035,5 +1034,10 @@ if (document.getElementById('choiceModal')) {
         if (modalTitle) {
             modalTitle.textContent = 'Feedback geben';
         }
+        // Show the modal
+        document.getElementById('choiceModal').style.display = 'block';
+    } else {
+        // No parameter: show all three options
+        document.getElementById('choiceModal').style.display = 'block';
     }
 }

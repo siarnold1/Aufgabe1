@@ -562,6 +562,68 @@ body {
     }
 }
 
+/* Selection Hint */
+.selection-hint {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(102, 126, 234, 0.1);
+    border-left: 3px solid #667eea;
+    border-radius: 5px;
+}
+
+/* Modal Hint */
+.modal-hint {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background: rgba(102, 126, 234, 0.15);
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Readonly Field */
+.readonly-field {
+    background: rgba(0, 0, 0, 0.5) !important;
+    cursor: not-allowed;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+/* Feedback Quote (Gedankenstriche) */
+.feedback-quote {
+    display: block;
+    font-style: italic;
+    color: #4facfe;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: rgba(79, 172, 254, 0.1);
+    border-left: 3px solid #4facfe;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+/* Make idea-content selectable */
+.idea-content {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+.idea-content::selection {
+    background: rgba(102, 126, 234, 0.4);
+    color: var(--text-light);
+}
+
+.idea-content::-moz-selection {
+    background: rgba(102, 126, 234, 0.4);
+    color: var(--text-light);
+}
+
 /* Animations */
 @keyframes fadeIn {
     from {

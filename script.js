@@ -226,7 +226,8 @@ function createIdeaCard(idea, index) {
             </div>
         </div>
 
-        <div class="idea-content">${escapeHtml(idea.text)}</div>
+        <div class="idea-content" id="idea-content-${idea.id}" data-idea-id="${idea.id}">${escapeHtml(idea.text)}</div>
+        <p class="selection-hint">💡 Markieren Sie eine Textpassage und klicken Sie auf "Feedback hinzufügen"</p>
 
         <div class="feedback-section">
             <div class="auto-feedback-container">
@@ -261,6 +262,15 @@ function createIdeaCard(idea, index) {
         </div>
     `;
 
+    // Add click listener for text selection on the idea content
+    setTimeout(() => {
+        const contentElement = document.getElementById(`idea-content-${idea.id}`);
+        if (contentElement) {
+            contentElement.style.cursor = 'text';
+            contentElement.style.userSelect = 'text';
+        }
+    }, 0);
+
     return card;
 }
 
@@ -280,19 +290,54 @@ function createUserFeedbackHTML(feedback) {
                 <span class="feedback-author">${escapeHtml(feedback.author)}</span>
                 <span>${formattedDate}</span>
             </div>
-            <div class="feedback-text">${escapeHtml(feedback.text)}</div>
-            ${feedback.passage ? `<div class="feedback-passage">${escapeHtml(feedback.passage)}</div>` : ''}
+            <div class="feedback-text">
+                ${feedback.passage ? `<span class="feedback-quote">— ${escapeHtml(feedback.passage)} —</span> ` : ''}
+                ${escapeHtml(feedback.text)}
+            </div>
         </div>
     `;
 }
 
 // Modal functions
 function openFeedbackModal(ideaId) {
+    // Get selected text
+    const selection = window.getSelection();
+    const selectedText = selection.toString().trim();
+
+    // Check if text is selected and if it's from the idea content
+    let isValidSelection = false;
+    if (selectedText && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const container = range.commonAncestorContainer;
+        const ideaContent = document.getElementById(`idea-content-${ideaId}`);
+
+        // Check if selection is within the idea content
+        if (ideaContent && (ideaContent.contains(container) || ideaContent === container)) {
+            isValidSelection = true;
+        }
+    }
+
+    if (!isValidSelection || !selectedText) {
+        alert('Bitte markieren Sie zuerst eine Textpassage im Text, zu der Sie Feedback geben möchten.');
+        return;
+    }
+
+    // Limit passage length
+    const maxPassageLength = 200;
+    const passage = selectedText.length > maxPassageLength
+        ? selectedText.substring(0, maxPassageLength) + '...'
+        : selectedText;
+
     const modal = document.getElementById('feedbackModal');
     document.getElementById('feedbackIdeaId').value = ideaId;
     document.getElementById('feedbackAuthor').value = '';
     document.getElementById('feedbackText').value = '';
-    document.getElementById('feedbackPassage').value = '';
+    document.getElementById('feedbackPassage').value = passage;
+
+    // Make passage field readonly and show it prominently
+    const passageField = document.getElementById('feedbackPassage');
+    passageField.setAttribute('readonly', 'true');
+
     modal.style.display = 'block';
 }
 
@@ -324,6 +369,11 @@ if (document.getElementById('feedbackModal')) {
 
         if (!text) {
             alert('Bitte geben Sie ein Feedback ein.');
+            return;
+        }
+
+        if (!passage) {
+            alert('Bitte markieren Sie eine Textpassage, bevor Sie das Modal öffnen.');
             return;
         }
 

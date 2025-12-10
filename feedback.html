@@ -35,12 +35,20 @@
         <div class="modal-content">
             <span class="modal-close">&times;</span>
             <h2>Feedback hinzufügen</h2>
+            <p class="modal-hint">💡 Ihre markierte Textpassage wird automatisch übernommen</p>
             <form id="userFeedbackForm">
                 <input type="hidden" id="feedbackIdeaId">
 
                 <div class="form-group">
-                    <label for="feedbackAuthor">Ihr Name (optional)</label>
-                    <input type="text" id="feedbackAuthor" placeholder="Anonym">
+                    <label for="feedbackPassage">Referenzierte Textpassage *</label>
+                    <textarea
+                        id="feedbackPassage"
+                        rows="3"
+                        readonly
+                        class="readonly-field"
+                        placeholder="Markieren Sie zuerst Text im Ideenfeld..."
+                        required
+                    ></textarea>
                 </div>
 
                 <div class="form-group">
@@ -48,18 +56,14 @@
                     <textarea
                         id="feedbackText"
                         rows="5"
-                        placeholder="Geben Sie konstruktives Feedback..."
+                        placeholder="Geben Sie konstruktives Feedback zur markierten Passage..."
                         required
                     ></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="feedbackPassage">Spezifische Textpassage (optional)</label>
-                    <input
-                        type="text"
-                        id="feedbackPassage"
-                        placeholder="z.B. 'Der zweite Absatz über...'"
-                    >
+                    <label for="feedbackAuthor">Ihr Name (optional)</label>
+                    <input type="text" id="feedbackAuthor" placeholder="Anonym">
                 </div>
 
                 <div class="form-actions">

@@ -211,6 +211,10 @@ function loadIdeas() {
         return;
     }
 
+    // Ensure container is visible and message is hidden
+    container.style.display = 'block';
+    noIdeasMessage.style.display = 'none';
+
     container.innerHTML = '';
     ideas.forEach((idea, index) => {
         const ideaCard = createIdeaCard(idea, index);

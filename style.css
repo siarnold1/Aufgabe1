@@ -954,10 +954,17 @@ body {
 
 /* Choice Buttons */
 .choice-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    justify-content: center;
     gap: 20px;
     margin-top: 30px;
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 900px) {
+    .choice-buttons {
+        flex-direction: column;
+    }
 }
 
 .btn-choice {
@@ -971,6 +978,9 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
 }
 
 .btn-choice:hover {

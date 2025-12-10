@@ -91,6 +91,112 @@
         </div>
     </div>
 
+    <!-- Modal for overall rating -->
+    <div id="overallRatingModal" class="modal">
+        <div class="modal-content modal-content-large">
+            <span class="modal-close" onclick="closeOverallRatingModal()">&times;</span>
+            <h2>Gesamtbewertung abgeben</h2>
+            <p class="modal-hint">⭐ Bewerten Sie den gesamten Text anhand verschiedener Aspekte</p>
+
+            <form id="overallRatingForm">
+                <input type="hidden" id="ratingIdeaId">
+
+                <!-- Text Preview -->
+                <div class="form-group">
+                    <label>Textvorschau</label>
+                    <div id="ratingTextPreview" class="text-preview">
+                        <!-- Text wird hier eingefügt -->
+                    </div>
+                </div>
+
+                <!-- Rating Criteria -->
+                <div class="rating-criteria">
+                    <div class="form-group">
+                        <label for="styleRating">
+                            Schreibstil
+                            <span class="rating-value" id="styleValue">3</span>/5
+                        </label>
+                        <input type="range" id="styleRating" min="1" max="5" value="3" class="rating-slider">
+                        <div class="rating-labels">
+                            <span>Schwach</span>
+                            <span>Ausgezeichnet</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tensionRating">
+                            Spannungsbogen
+                            <span class="rating-value" id="tensionValue">3</span>/5
+                        </label>
+                        <input type="range" id="tensionRating" min="1" max="5" value="3" class="rating-slider">
+                        <div class="rating-labels">
+                            <span>Schwach</span>
+                            <span>Fesselnd</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="structureRating">
+                            Struktur & Aufbau
+                            <span class="rating-value" id="structureValue">3</span>/5
+                        </label>
+                        <input type="range" id="structureRating" min="1" max="5" value="3" class="rating-slider">
+                        <div class="rating-labels">
+                            <span>Unstrukturiert</span>
+                            <span>Klar strukturiert</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clarityRating">
+                            Verständlichkeit
+                            <span class="rating-value" id="clarityValue">3</span>/5
+                        </label>
+                        <input type="range" id="clarityRating" min="1" max="5" value="3" class="rating-slider">
+                        <div class="rating-labels">
+                            <span>Unklar</span>
+                            <span>Sehr klar</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="originalityRating">
+                            Originalität
+                            <span class="rating-value" id="originalityValue">3</span>/5
+                        </label>
+                        <input type="range" id="originalityRating" min="1" max="5" value="3" class="rating-slider">
+                        <div class="rating-labels">
+                            <span>Konventionell</span>
+                            <span>Innovativ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Comments -->
+                <div class="form-group">
+                    <label for="overallComment">Zusätzliche Anmerkungen (optional)</label>
+                    <textarea
+                        id="overallComment"
+                        rows="4"
+                        placeholder="Ihre allgemeinen Anmerkungen zum gesamten Text..."
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="ratingAuthor">Ihr Name (optional)</label>
+                    <input type="text" id="ratingAuthor" placeholder="Anonym">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Bewertung absenden</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeOverallRatingModal()">
+                        Abbrechen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

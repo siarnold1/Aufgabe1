@@ -166,7 +166,8 @@ if (document.getElementById('ideaForm')) {
             text: text,
             timestamp: new Date().toISOString(),
             autoFeedback: autoFeedback,
-            userFeedback: []
+            userFeedback: [],
+            overallRatings: []
         };
 
         // Save to storage
@@ -253,10 +254,26 @@ function createIdeaCard(idea, index) {
                         : '<p style="color: var(--text-dim);">Noch kein Nutzer-Feedback vorhanden. Seien Sie der Erste!</p>'
                     }
                 </div>
-                <button class="btn btn-primary add-feedback-btn" onclick="openFeedbackModal(${idea.id})">
-                    <span class="btn-icon">💭</span>
-                    Feedback hinzufügen
-                </button>
+                <div class="feedback-buttons">
+                    <button class="btn btn-primary add-feedback-btn" onclick="openFeedbackModal(${idea.id})">
+                        <span class="btn-icon">💭</span>
+                        Feedback zu Passage
+                    </button>
+                    <button class="btn btn-secondary add-feedback-btn" onclick="openOverallRatingModal(${idea.id})">
+                        <span class="btn-icon">⭐</span>
+                        Gesamtbewertung
+                    </button>
+                </div>
+            </div>
+
+            <div class="overall-ratings-container">
+                <h3 class="feedback-header">⭐ Gesamtbewertungen (${idea.overallRatings ? idea.overallRatings.length : 0})</h3>
+                <div id="overallRatingsList-${idea.id}">
+                    ${idea.overallRatings && idea.overallRatings.length > 0
+                        ? idea.overallRatings.map(rating => createOverallRatingHTML(rating)).join('')
+                        : '<p style="color: var(--text-dim);">Noch keine Gesamtbewertungen vorhanden.</p>'
+                    }
+                </div>
             </div>
         </div>
     `;
@@ -297,6 +314,94 @@ function createUserFeedbackHTML(feedback) {
     `;
 }
 
+function createOverallRatingHTML(rating) {
+    const date = new Date(rating.timestamp);
+    const formattedDate = date.toLocaleDateString('de-DE', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    // Calculate average rating
+    const avgRating = (
+        rating.style +
+        rating.tension +
+        rating.structure +
+        rating.clarity +
+        rating.originality
+    ) / 5;
+
+    // Create star display
+    const fullStars = Math.floor(avgRating);
+    const hasHalfStar = (avgRating % 1) >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+    let starsHTML = '★'.repeat(fullStars);
+    if (hasHalfStar) starsHTML += '⯨';
+    starsHTML += '☆'.repeat(emptyStars);
+
+    return `
+        <div class="rating-item">
+            <div class="rating-header">
+                <div>
+                    <span class="rating-author">${escapeHtml(rating.author)}</span>
+                    <span class="rating-date">${formattedDate}</span>
+                </div>
+                <div class="rating-average">
+                    <span class="stars">${starsHTML}</span>
+                    <span class="avg-value">${avgRating.toFixed(1)}/5</span>
+                </div>
+            </div>
+
+            <div class="rating-details">
+                <div class="rating-bar-item">
+                    <span class="rating-label">Schreibstil</span>
+                    <div class="rating-bar">
+                        <div class="rating-fill" style="width: ${(rating.style / 5) * 100}%"></div>
+                    </div>
+                    <span class="rating-score">${rating.style}/5</span>
+                </div>
+
+                <div class="rating-bar-item">
+                    <span class="rating-label">Spannungsbogen</span>
+                    <div class="rating-bar">
+                        <div class="rating-fill" style="width: ${(rating.tension / 5) * 100}%"></div>
+                    </div>
+                    <span class="rating-score">${rating.tension}/5</span>
+                </div>
+
+                <div class="rating-bar-item">
+                    <span class="rating-label">Struktur</span>
+                    <div class="rating-bar">
+                        <div class="rating-fill" style="width: ${(rating.structure / 5) * 100}%"></div>
+                    </div>
+                    <span class="rating-score">${rating.structure}/5</span>
+                </div>
+
+                <div class="rating-bar-item">
+                    <span class="rating-label">Verständlichkeit</span>
+                    <div class="rating-bar">
+                        <div class="rating-fill" style="width: ${(rating.clarity / 5) * 100}%"></div>
+                    </div>
+                    <span class="rating-score">${rating.clarity}/5</span>
+                </div>
+
+                <div class="rating-bar-item">
+                    <span class="rating-label">Originalität</span>
+                    <div class="rating-bar">
+                        <div class="rating-fill" style="width: ${(rating.originality / 5) * 100}%"></div>
+                    </div>
+                    <span class="rating-score">${rating.originality}/5</span>
+                </div>
+            </div>
+
+            ${rating.comment ? `<div class="rating-comment">${escapeHtml(rating.comment)}</div>` : ''}
+        </div>
+    `;
+}
+
 // Modal functions
 function openFeedbackModal(ideaId) {
     // Find the idea
@@ -330,14 +435,73 @@ function closeFeedbackModal() {
     modal.style.display = 'none';
 }
 
-// Close modal when clicking outside
+// Overall Rating Modal functions
+function openOverallRatingModal(ideaId) {
+    // Find the idea
+    const ideas = getIdeas();
+    const idea = ideas.find(i => i.id === ideaId);
+
+    if (!idea) {
+        alert('Idee nicht gefunden.');
+        return;
+    }
+
+    // Set idea ID
+    document.getElementById('ratingIdeaId').value = ideaId;
+
+    // Load text preview (truncated)
+    const textPreview = document.getElementById('ratingTextPreview');
+    const maxPreviewLength = 300;
+    const previewText = idea.text.length > maxPreviewLength
+        ? idea.text.substring(0, maxPreviewLength) + '...'
+        : idea.text;
+    textPreview.textContent = previewText;
+
+    // Reset form fields
+    document.getElementById('ratingAuthor').value = '';
+    document.getElementById('overallComment').value = '';
+
+    // Reset sliders to 3
+    const sliders = ['styleRating', 'tensionRating', 'structureRating', 'clarityRating', 'originalityRating'];
+    sliders.forEach(sliderId => {
+        document.getElementById(sliderId).value = 3;
+        updateRatingValue(sliderId);
+    });
+
+    // Show modal
+    const modal = document.getElementById('overallRatingModal');
+    modal.style.display = 'block';
+}
+
+function closeOverallRatingModal() {
+    const modal = document.getElementById('overallRatingModal');
+    modal.style.display = 'none';
+}
+
+function updateRatingValue(sliderId) {
+    const slider = document.getElementById(sliderId);
+    const valueId = sliderId.replace('Rating', 'Value');
+    const valueSpan = document.getElementById(valueId);
+    if (valueSpan) {
+        valueSpan.textContent = slider.value;
+    }
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const feedbackModal = document.getElementById('feedbackModal');
+    const ratingModal = document.getElementById('overallRatingModal');
+
+    if (event.target == feedbackModal) {
+        closeFeedbackModal();
+    }
+    if (event.target == ratingModal) {
+        closeOverallRatingModal();
+    }
+};
+
+// Feedback Modal event listeners
 if (document.getElementById('feedbackModal')) {
-    window.onclick = function(event) {
-        const modal = document.getElementById('feedbackModal');
-        if (event.target == modal) {
-            closeFeedbackModal();
-        }
-    };
 
     // Close button
     document.querySelector('.modal-close').onclick = closeFeedbackModal;
@@ -428,6 +592,66 @@ if (document.getElementById('feedbackModal')) {
             setTimeout(() => {
                 const ideaCard = document.querySelector(`#userFeedbackList-${ideaId}`).closest('.idea-card');
                 ideaCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    });
+}
+
+// Overall Rating Modal event listeners
+if (document.getElementById('overallRatingModal')) {
+    // Update rating values when sliders change
+    const sliders = ['styleRating', 'tensionRating', 'structureRating', 'clarityRating', 'originalityRating'];
+    sliders.forEach(sliderId => {
+        const slider = document.getElementById(sliderId);
+        if (slider) {
+            slider.addEventListener('input', () => updateRatingValue(sliderId));
+        }
+    });
+
+    // Submit overall rating
+    document.getElementById('overallRatingForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const ideaId = parseInt(document.getElementById('ratingIdeaId').value);
+        const author = document.getElementById('ratingAuthor').value.trim() || 'Anonym';
+        const comment = document.getElementById('overallComment').value.trim();
+
+        const rating = {
+            author: author,
+            style: parseInt(document.getElementById('styleRating').value),
+            tension: parseInt(document.getElementById('tensionRating').value),
+            structure: parseInt(document.getElementById('structureRating').value),
+            clarity: parseInt(document.getElementById('clarityRating').value),
+            originality: parseInt(document.getElementById('originalityRating').value),
+            comment: comment,
+            timestamp: new Date().toISOString()
+        };
+
+        // Add rating to idea
+        const ideas = getIdeas();
+        const ideaIndex = ideas.findIndex(i => i.id === ideaId);
+
+        if (ideaIndex !== -1) {
+            // Initialize overallRatings array if it doesn't exist
+            if (!ideas[ideaIndex].overallRatings) {
+                ideas[ideaIndex].overallRatings = [];
+            }
+
+            ideas[ideaIndex].overallRatings.push(rating);
+            saveIdeas(ideas);
+
+            // Reload ideas display
+            loadIdeas();
+
+            // Close modal
+            closeOverallRatingModal();
+
+            // Scroll to the rating section
+            setTimeout(() => {
+                const ideaCard = document.querySelector(`#overallRatingsList-${ideaId}`).closest('.idea-card');
+                if (ideaCard) {
+                    ideaCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
             }, 100);
         }
     });

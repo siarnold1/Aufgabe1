@@ -32,27 +32,42 @@
 
     <!-- Modal for adding user feedback -->
     <div id="feedbackModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content modal-content-large">
             <span class="modal-close">&times;</span>
             <h2>Feedback hinzufügen</h2>
-            <p class="modal-hint">💡 Ihre markierte Textpassage wird automatisch übernommen</p>
+            <p class="modal-hint">💡 Markieren Sie im Text unten die Passage, zu der Sie Feedback geben möchten</p>
+
             <form id="userFeedbackForm">
                 <input type="hidden" id="feedbackIdeaId">
 
+                <!-- Schritt 1: Text anzeigen und markieren -->
                 <div class="form-group">
-                    <label for="feedbackPassage">Referenzierte Textpassage *</label>
+                    <label>Schritt 1: Markieren Sie eine Textpassage im folgenden Text</label>
+                    <div id="modalIdeaText" class="modal-idea-text">
+                        <!-- Der Ideentext wird hier dynamisch eingefügt -->
+                    </div>
+                    <button type="button" class="btn btn-primary" id="captureSelectionBtn" style="margin-top: 10px;">
+                        <span class="btn-icon">✓</span>
+                        Markierte Passage übernehmen
+                    </button>
+                </div>
+
+                <!-- Schritt 2: Übernommene Passage anzeigen -->
+                <div class="form-group">
+                    <label for="feedbackPassage">Schritt 2: Ihre ausgewählte Textpassage *</label>
                     <textarea
                         id="feedbackPassage"
                         rows="3"
                         readonly
                         class="readonly-field"
-                        placeholder="Markieren Sie zuerst Text im Ideenfeld..."
+                        placeholder="Klicken Sie auf 'Passage übernehmen' nachdem Sie Text markiert haben..."
                         required
                     ></textarea>
                 </div>
 
+                <!-- Schritt 3: Feedback eingeben -->
                 <div class="form-group">
-                    <label for="feedbackText">Ihr Feedback *</label>
+                    <label for="feedbackText">Schritt 3: Ihr Feedback zur Passage *</label>
                     <textarea
                         id="feedbackText"
                         rows="5"

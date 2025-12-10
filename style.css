@@ -500,6 +500,42 @@ body {
     position: relative;
 }
 
+.modal-content-large {
+    max-width: 900px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.modal-idea-text {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    color: var(--text-light);
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    cursor: text;
+}
+
+.modal-idea-text::selection {
+    background: rgba(102, 126, 234, 0.5);
+    color: var(--text-light);
+}
+
+.modal-idea-text::-moz-selection {
+    background: rgba(102, 126, 234, 0.5);
+    color: var(--text-light);
+}
+
 .modal-close {
     color: var(--text-dim);
     float: right;

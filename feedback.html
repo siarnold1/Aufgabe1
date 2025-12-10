@@ -18,6 +18,56 @@
             <a href="submit.html" class="btn-link">+ Neue Idee einreichen</a>
         </nav>
 
+        <!-- Filter Section -->
+        <section class="filter-section">
+            <h3>🔍 Texte filtern</h3>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="filterCategory">Nach Textart filtern:</label>
+                    <select id="filterCategory" onchange="filterIdeas()">
+                        <option value="">Alle Textarten</option>
+                        <option value="social-media">📱 Social Media Beitrag</option>
+                        <option value="blog">📝 Blog-Artikel</option>
+                        <option value="newspaper">📰 Zeitungskommentar</option>
+                        <option value="essay">📖 Essay / Aufsatz</option>
+                        <option value="short-story">📚 Kurzgeschichte</option>
+                        <option value="poem">✍️ Gedicht</option>
+                        <option value="product">🛍️ Produktbeschreibung</option>
+                        <option value="speech">🎤 Rede / Vortrag</option>
+                        <option value="review">⭐ Rezension / Kritik</option>
+                        <option value="academic">🎓 Wissenschaftlicher Text</option>
+                        <option value="letter">✉️ Brief / E-Mail</option>
+                        <option value="other">📄 Sonstiges</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterGenre">Nach Genre filtern:</label>
+                    <select id="filterGenre" onchange="filterIdeas()">
+                        <option value="">Alle Genres</option>
+                        <option value="fiction">🌟 Fiktion / Fantasy</option>
+                        <option value="non-fiction">📚 Sachtext / Non-Fiction</option>
+                        <option value="technology">💻 Technologie / IT</option>
+                        <option value="science">🔬 Wissenschaft</option>
+                        <option value="business">💼 Wirtschaft / Business</option>
+                        <option value="politics">🏛️ Politik / Gesellschaft</option>
+                        <option value="culture">🎨 Kultur / Kunst</option>
+                        <option value="lifestyle">🌈 Lifestyle / Persönliches</option>
+                        <option value="education">📖 Bildung / Lernen</option>
+                        <option value="health">⚕️ Gesundheit / Medizin</option>
+                        <option value="environment">🌱 Umwelt / Nachhaltigkeit</option>
+                        <option value="entertainment">🎬 Unterhaltung / Medien</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-secondary" onclick="resetFilters()">
+                    <span class="btn-icon">🔄</span>
+                    Filter zurücksetzen
+                </button>
+            </div>
+            <div id="filterStats" class="filter-stats"></div>
+        </section>
+
         <div id="ideasContainer" class="ideas-container">
             <!-- Ideas will be dynamically loaded here -->
         </div>

@@ -244,7 +244,8 @@ body {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
     padding: 15px;
     background: rgba(0, 0, 0, 0.3);
@@ -256,8 +257,19 @@ body {
     transition: all 0.3s ease;
 }
 
+.form-group select {
+    cursor: pointer;
+}
+
+.form-group select option {
+    background: var(--bg-dark);
+    color: var(--text-light);
+    padding: 10px;
+}
+
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
@@ -335,6 +347,102 @@ body {
     position: absolute;
     left: 0;
     color: #667eea;
+}
+
+/* Filter Section */
+.filter-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.filter-section h3 {
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 20px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-light);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+}
+
+.filter-group select option {
+    background: var(--bg-dark);
+    color: var(--text-light);
+    padding: 10px;
+}
+
+.filter-stats {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Category and Genre Badges */
+.idea-categories {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.category-badge,
+.genre-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.category-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.genre-badge {
+    background: rgba(79, 172, 254, 0.2);
+    color: #4facfe;
+    border: 1px solid #4facfe;
 }
 
 /* Ideas Container */

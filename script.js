@@ -11,7 +11,17 @@ function initStorage() {
 // Get all ideas from storage
 function getIdeas() {
     initStorage();
-    return JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    // Filter out old ideas without category (migration)
+    const validIdeas = ideas.filter(idea => idea.category);
+
+    // Save cleaned ideas if any were removed
+    if (validIdeas.length !== ideas.length) {
+        saveIdeas(validIdeas);
+    }
+
+    return validIdeas;
 }
 
 // Save ideas to storage
@@ -149,8 +159,10 @@ if (document.getElementById('ideaForm')) {
         const author = document.getElementById('authorName').value.trim() || 'Anonym';
         const title = document.getElementById('ideaTitle').value.trim();
         const text = ideaText.value.trim();
+        const category = document.getElementById('textCategory').value;
+        const genre = document.getElementById('textGenre').value;
 
-        if (!title || !text) {
+        if (!title || !text || !category) {
             alert('Bitte füllen Sie alle Pflichtfelder aus.');
             return;
         }
@@ -164,6 +176,8 @@ if (document.getElementById('ideaForm')) {
             author: author,
             title: title,
             text: text,
+            category: category,
+            genre: genre,
             timestamp: new Date().toISOString(),
             autoFeedback: autoFeedback,
             userFeedback: [],
@@ -217,12 +231,20 @@ function createIdeaCard(idea, index) {
         minute: '2-digit'
     });
 
+    // Get category and genre labels
+    const categoryLabel = getCategoryLabel(idea.category);
+    const genreLabel = idea.genre ? getGenreLabel(idea.genre) : '';
+
     card.innerHTML = `
         <div class="idea-header">
             <div>
                 <h2 class="idea-title">${escapeHtml(idea.title)}</h2>
                 <div class="idea-meta">
                     von <strong>${escapeHtml(idea.author)}</strong> • ${formattedDate}
+                </div>
+                <div class="idea-categories">
+                    <span class="category-badge">${categoryLabel}</span>
+                    ${genreLabel ? `<span class="genre-badge">${genreLabel}</span>` : ''}
                 </div>
             </div>
         </div>
@@ -400,6 +422,99 @@ function createOverallRatingHTML(rating) {
             ${rating.comment ? `<div class="rating-comment">${escapeHtml(rating.comment)}</div>` : ''}
         </div>
     `;
+}
+
+// Helper functions for category and genre labels
+function getCategoryLabel(category) {
+    const labels = {
+        'social-media': '📱 Social Media',
+        'blog': '📝 Blog-Artikel',
+        'newspaper': '📰 Zeitungskommentar',
+        'essay': '📖 Essay',
+        'short-story': '📚 Kurzgeschichte',
+        'poem': '✍️ Gedicht',
+        'product': '🛍️ Produktbeschreibung',
+        'speech': '🎤 Rede',
+        'review': '⭐ Rezension',
+        'academic': '🎓 Wissenschaftlich',
+        'letter': '✉️ Brief',
+        'other': '📄 Sonstiges'
+    };
+    return labels[category] || category;
+}
+
+function getGenreLabel(genre) {
+    const labels = {
+        'fiction': '🌟 Fiktion',
+        'non-fiction': '📚 Sachtext',
+        'technology': '💻 Technologie',
+        'science': '🔬 Wissenschaft',
+        'business': '💼 Wirtschaft',
+        'politics': '🏛️ Politik',
+        'culture': '🎨 Kultur',
+        'lifestyle': '🌈 Lifestyle',
+        'education': '📖 Bildung',
+        'health': '⚕️ Gesundheit',
+        'environment': '🌱 Umwelt',
+        'entertainment': '🎬 Unterhaltung'
+    };
+    return labels[genre] || genre;
+}
+
+// Filter functions
+function filterIdeas() {
+    const filterCategory = document.getElementById('filterCategory').value;
+    const filterGenre = document.getElementById('filterGenre').value;
+
+    const allIdeas = getIdeas();
+
+    const filteredIdeas = allIdeas.filter(idea => {
+        const categoryMatch = !filterCategory || idea.category === filterCategory;
+        const genreMatch = !filterGenre || idea.genre === filterGenre;
+        return categoryMatch && genreMatch;
+    });
+
+    displayFilteredIdeas(filteredIdeas);
+    updateFilterStats(filteredIdeas.length, allIdeas.length);
+}
+
+function displayFilteredIdeas(ideas) {
+    const container = document.getElementById('ideasContainer');
+    const noIdeasMessage = document.getElementById('noIdeasMessage');
+
+    if (ideas.length === 0) {
+        container.style.display = 'none';
+        noIdeasMessage.style.display = 'block';
+        noIdeasMessage.querySelector('h3').textContent = 'Keine passenden Ideen gefunden';
+        noIdeasMessage.querySelector('p').textContent = 'Versuchen Sie, die Filter anzupassen.';
+        return;
+    }
+
+    container.style.display = 'block';
+    noIdeasMessage.style.display = 'none';
+    container.innerHTML = '';
+
+    ideas.forEach((idea, index) => {
+        const ideaCard = createIdeaCard(idea, index);
+        container.appendChild(ideaCard);
+    });
+}
+
+function updateFilterStats(filtered, total) {
+    const statsElement = document.getElementById('filterStats');
+    if (filtered === total) {
+        statsElement.textContent = `${total} Ideen insgesamt`;
+    } else {
+        statsElement.textContent = `${filtered} von ${total} Ideen werden angezeigt`;
+    }
+    statsElement.style.display = 'block';
+}
+
+function resetFilters() {
+    document.getElementById('filterCategory').value = '';
+    document.getElementById('filterGenre').value = '';
+    loadIdeas();
+    document.getElementById('filterStats').textContent = '';
 }
 
 // Modal functions

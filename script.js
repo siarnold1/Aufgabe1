@@ -218,7 +218,7 @@ function loadIdeas() {
     });
 }
 
-function createIdeaCard(idea, index) {
+function createIdeaCard(idea, index, showFeedbackButtons = false) {
     const card = document.createElement('div');
     card.className = 'idea-card';
 
@@ -276,6 +276,7 @@ function createIdeaCard(idea, index) {
                         : '<p style="color: var(--text-dim);">Noch kein Nutzer-Feedback vorhanden. Seien Sie der Erste!</p>'
                     }
                 </div>
+                ${showFeedbackButtons ? `
                 <div class="feedback-buttons">
                     <button class="btn btn-primary add-feedback-btn" onclick="openFeedbackModal(${idea.id})">
                         <span class="btn-icon">💭</span>
@@ -286,6 +287,7 @@ function createIdeaCard(idea, index) {
                         Gesamtbewertung
                     </button>
                 </div>
+                ` : ''}
             </div>
 
             <div class="overall-ratings-container">

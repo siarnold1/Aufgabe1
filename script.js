@@ -1014,3 +1014,26 @@ function escapeHtml(unsafe) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
+// Handle URL parameters for direct navigation
+if (document.getElementById('choiceModal')) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+
+    if (mode === 'own') {
+        // Directly go to "My own feedback"
+        document.getElementById('choiceModal').style.display = 'none';
+        showMyOwnFeedback();
+    } else if (mode === 'review') {
+        // Show choice modal but hide "My own feedback" button
+        const ownFeedbackBtn = document.querySelector('.btn-choice[onclick="showMyOwnFeedback()"]');
+        if (ownFeedbackBtn) {
+            ownFeedbackBtn.style.display = 'none';
+        }
+        // Update modal title
+        const modalTitle = document.querySelector('#choiceModal h2');
+        if (modalTitle) {
+            modalTitle.textContent = 'Feedback geben';
+        }
+    }
+}
